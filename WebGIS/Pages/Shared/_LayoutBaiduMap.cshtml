@@ -1,0 +1,20 @@
+﻿
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewData["Title"] - 百度地图</title>
+
+    
+
+    @*webgis webapp ak*@
+    <script type="text/javascript" src="http://api.map.baidu.com/api?v=3.0&ak=cYX2HGzpPxeEGf8qTEyhKU3fNUr7YekW">
+    </script>
+</head>
+<body>
+    @RenderBody()
+
+    @RenderSection("Scripts", required: false)
+</body>
+</html>
