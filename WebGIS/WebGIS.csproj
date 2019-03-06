@@ -10,4 +10,9 @@
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="wwwroot\html\LeafletBaiduMap.html" />
+    <None Include="wwwroot\html\OpenLayersBaiduMap.html" />
+  </ItemGroup>
+
 </Project>

@@ -1,0 +1,60 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Leaflet 加载百度地图 </title>
+    <link rel="stylesheet" href="http://cdn.staticfile.org/leaflet/1.4.0/leaflet.css" />
+
+    <style>
+        html, body {
+            height: 100%;
+            padding: 0;
+            margin: 0;
+        }
+
+        #map {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+
+</head>
+<body>
+    <div id="map"></div>
+    <script src="http://cdn.staticfile.org/leaflet/1.4.0/leaflet.js"></script>
+    <script src="https://cdn.staticfile.org/proj4js/2.5.0/proj4.js"></script>
+    <script src="https://cdn.staticfile.org/proj4leaflet/1.0.2/proj4leaflet.min.js"></script>
+    
+    <script>
+        var crs = new L.Proj.CRS('EPSG:3395',
+            '+proj=merc +lon_0=0 +k=1 +x_0=0 +y_0=0 +datum=WGS84 +units=m +no_defs',
+            {
+                resolutions: function () {
+                    level = 19
+                    var res = [];
+                    res[0] = Math.pow(2, 18);
+                    for (var i = 1; i < level; i++) {
+                        res[i] = Math.pow(2, (18 - i))
+                    }
+                    return res;
+                }(),
+                origin: [0, 0],
+                bounds: L.bounds([20037508.342789244, 0], [0, 20037508.342789244])
+            }),
+            map = L.map('map', {
+                crs: crs
+            });
+
+        new L.TileLayer('http://online{s}.map.bdimg.com/tile/?qt=tile&x={x}&y={y}&z={z}&styles=pl&udt=20150518', {
+            maxZoom: 18,
+            minZoom: 3,
+            subdomains: [0, 1, 2],
+            tms: true
+        }).addTo(map);
+
+        new L.marker([39.91349, 116.407945]).addTo(map);
+
+        map.setView([39.91349, 116.407945], 15);
+    </script>
+</body>
+</html>
