@@ -1,0 +1,106 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>ArcGIS JsAPI加载三维房屋</title>
+
+
+    <link rel="stylesheet" href="https://js.arcgis.com/4.10/esri/css/main.css">
+    <script src="https://js.arcgis.com/4.10/"></script>
+
+    <style>
+        html, body, #viewDiv {
+            padding: 0;
+            margin: 0;
+            height: 100%;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div id="viewDiv"></div>
+    <script>
+        require([
+            "esri/Map",
+            "esri/views/SceneView",
+            "esri/layers/FeatureLayer",
+            "esri/widgets/Legend"
+        ], function (Map, SceneView, FeatureLayer, Legend) {
+            // Code to create the map and view will go here
+
+            
+
+
+            // 3D polygon symbol for residential buildings
+            var resSym = {
+                type: "polygon-3d",  // autocasts as new PolygonSymbol3D()
+                // add an ExtrudeSymbol3DLayer to the symbolLayers array and set the color
+                symbolLayers: [{
+                    type: "extrude",  // autocasts as new ExtrudeSymbol3DLayer()
+                    size:3.2,
+                    material: {
+                        color: "#FC921F"  // orange
+                    },
+                    edges: { // add edges of type solid
+                        type: "solid",
+                        color: "#AF6515" // dark orange
+                    }
+                }]
+            };
+
+            var renderer = {
+                type: "simple", // autocasts as new UniqueValueRenderer()
+                symbol: resSym,
+                visualVariables: [{
+                    type: "size",
+                    field: "floor",
+                    valueExpression:"$feature.floor * 3.2",
+                    valueUnit: "meters" // Converts and extrudes all data values in feet
+                }]
+                
+            };
+
+            var buildingsLayer = new FeatureLayer({
+                url: "https://gis.zjgisdev.com/hserver/rest/services/HOUSE/HANGZHOU_HOUSE3D/FeatureServer/0",
+                renderer: renderer,
+                popupTemplate: { // autocasts as new PopupTemplate()
+                    title: "层数-{floor}",
+                    content: [{
+                        type: "fields",
+                        fieldInfos: [{
+                            fieldName: "objectid",
+                            label: "ObjectID"
+                        }, {
+                            fieldName: "id",
+                            label: "编码"
+                        }, {
+                            fieldName: "floor",
+                            label: "楼层"
+                        }]
+                    }]
+                },
+                outFields: ["objectid", "id", "floor"]
+                //definitionExpression: "ELEVATION > 0", // show only buildings with height
+            });
+
+            var map = new Map({
+                basemap: "streets",
+                ground: "world-elevation",
+                layers: [buildingsLayer]
+            });
+
+            var view = new SceneView({
+                container: "viewDiv",  // Reference to the DOM node that will contain the view
+                map: map  // References the map object created in step 3
+                
+            });
+
+            var legend = new Legend({
+                view: view
+            });
+
+            view.ui.add(legend, "bottom-right");
+        });
+    </script>
+</body>
+</html>
